@@ -1,0 +1,3 @@
+#include <iostream>
+#undef Main
+
