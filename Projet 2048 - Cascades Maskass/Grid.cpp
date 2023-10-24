@@ -46,14 +46,16 @@ void Grid::SpawnFreshTiles(int n) {
 	{
 		Cell* cell = GetRandomEmptyCell();
 		int value = GetRandomTileValue();
-		// Remove cell from emptyCells
+		
 		SetCell(cell, value);
 	}
 }
 
 Cell* Grid::GetRandomEmptyCell() {
 	int cellIndex = rand() % emptyCells.size();
-	return emptyCells[cellIndex];
+	Cell* out = emptyCells[cellIndex];
+	emptyCells.erase(emptyCells.begin() + cellIndex);
+	return out;
 }
 
 int Grid::GetRandomTileValue() {
@@ -71,6 +73,61 @@ void Grid::Display() {
 }
 
 void Grid::Clean() {
+	for (int x = 0; x < size; x++)
+	{
+		for (int y = 0; y < size; y++)
+		{
+			delete GetCell(x, y);
+		}
+	}
+
 	delete &grid;
 	delete &emptyCells;
+}
+
+static enum ValidCommands {move_up, move_down, move_right, move_left};
+
+void Grid::getMovement() {
+	map<string, ValidCommands> commands;
+	commands["up"] = ValidCommands::move_up;
+	commands["down"] = ValidCommands::move_down;
+	commands["right"] = ValidCommands::move_right;
+	commands["left"] = ValidCommands::move_left;
+
+	bool validCommand = false;
+	string command;
+
+	while (!validCommand) {
+		cout << CHOOSE_MOVE_TEXT << " : ";
+		cin >> command;
+		Utility::lowerString(command);
+
+		cout << endl << "You entered " << command << endl;
+
+		Utility::clearConsole();
+		if (commands.find(command) == commands.end()) {
+			cout << "Invalid command ! Please try again !" << endl;
+			continue;
+		} else {
+			cout << "You entered a valid command, processing to move " << command << " !" << endl;
+			validCommand = true;
+		}
+	}
+
+	ValidCommands vCom = commands[command];
+	switch (vCom)
+	{
+	case move_up:
+		cout << "Move upwards !";
+		break;
+	case move_down:
+		cout << "Move downwards !";
+		break;
+	case move_right:
+		cout << "Move upwards !";
+		break;
+	case move_left:
+
+		break;
+	}
 }
