@@ -12,9 +12,9 @@ int main(int argc, char* argv[]) {
 	grid->Init();
 	
 	grid->Display();
-	grid->Papagnan(2);
+	grid->SpawnFreshTiles(2);
 	grid->Display();
-	delete grid;
-
+	
+	grid->Clean();
 	return 0;
 }

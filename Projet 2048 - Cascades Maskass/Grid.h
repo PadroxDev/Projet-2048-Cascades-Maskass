@@ -2,13 +2,15 @@
 
 #include <iostream>
 #include <vector>
-#include <set>
+
+#include "Cell.h"
 
 using namespace std;
 
 class Grid {
 private:
-	vector<vector<int>> grid;
+	vector<vector<Cell*>> grid;
+	vector<Cell*> emptyCells;
 	int size;
 public:
 	Grid(int size);
@@ -18,9 +20,12 @@ public:
 	int GetSize() { return size; }
 	
 	void Init();
-	int GetCell(int x, int y);
-	void SetCell(int value, int x, int y);
-	void Papagnan(int n);
-	void Display();
+	Cell* GetCell(int x, int y);
+	void SetCell(int x, int y, int value);
+	void SetCell(Cell* cell, int value);
+	void SpawnFreshTiles(int n);
+	Cell* GetRandomEmptyCell();
 	int GetRandomTileValue();
+	void Display();
+	void Clean();
 };
