@@ -2,10 +2,10 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 #include "Cell.h"
 #include "Utility.h"
 #include "Messages.h"
-#include <map>
 
 using namespace std;
 
@@ -29,6 +29,9 @@ public:
 	Cell* GetRandomEmptyCell();
 	int GetRandomTileValue();
 	void Display();
-	void getMovement();
+	void GetMovement();
+	void ShiftCellsTowards(string direction);
+	void MoveCell(int x, int y);
+	//void SwapCells(Cell**& from, Cell**& to);
 	void Clean();
 };

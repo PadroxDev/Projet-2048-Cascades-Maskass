@@ -13,8 +13,8 @@ int main(int argc, char* argv[]) {
 	
 	grid->SpawnFreshTiles(2);
 	grid->Display();
-	grid->getMovement();
-	
+	grid->ShiftCellsTowards("left");
+	grid->Display();
 	grid->Clean();
 	return 0;
 }

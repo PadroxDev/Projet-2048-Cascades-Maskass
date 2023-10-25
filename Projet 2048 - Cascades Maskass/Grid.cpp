@@ -66,7 +66,7 @@ void Grid::Display() {
 	cout << endl;
 	for (int x = 0; x < size; x++) {
 		for (int y = 0; y < size; y++) {
-			cout << grid[x][y]->GetValue();
+			cout << grid[y][x]->GetValue();
 		}
 		cout << endl;
 	}
@@ -87,7 +87,7 @@ void Grid::Clean() {
 
 static enum ValidCommands {move_up, move_down, move_right, move_left};
 
-void Grid::getMovement() {
+void Grid::GetMovement() {
 	map<string, ValidCommands> commands;
 	commands["up"] = ValidCommands::move_up;
 	commands["down"] = ValidCommands::move_down;
@@ -128,6 +128,72 @@ void Grid::getMovement() {
 		break;
 	case move_left:
 
+		break;
+	}
+}
+
+//void Grid::MoveCell() {
+//	for (int x = 0; x < size; x++) {
+//		for (int y = 0; y < size; y++)
+//		{
+//			Cell* cell = GetCell(x, y);
+//			if (cell->GetValue() == 0) continue;
+//
+//			while(cell->Position[0] > 0) {
+//				Cell* neighbour = GetCell(cell->Position[0] - 1, y);
+//				if(neighbour->GetValue() == 0) {
+//					cell->Position[0] -= 1;
+//					Cell* tmp = grid[x][y];
+//					grid[x][y] = grid[x - 1][y];
+//					grid[x - 1][y] = tmp;
+//					cout << "Supposed to move !";
+//				} else if(neighbour->GetValue() == cell->GetValue()) {
+//					//cout << "cout << MERGE UWUS AZEA ËZRAPRAZ¨PR ÄZ";
+//					cout << "papagnan";
+//					neighbour->SetValue(neighbour->GetValue() * 2);
+//					cell->SetValue(0);
+//					break;
+//				} else {
+//					cout << "nop";
+//					break;
+//				}
+//			}
+//		}
+//	}
+//}
+
+void Grid::ShiftCellsTowards(string direction) {
+	for (int x = 0; x < size; x++) {
+		for (int y = 0; y < size; y++)
+		{
+			MoveCell(x, y);
+		}
+	}
+}
+
+void Grid::MoveCell(int x, int y) {
+	Cell* cell = GetCell(x, y);
+	if (cell->GetValue() == 0) return;
+
+	bool hasMerged = false;
+
+	while (cell->Position[0] > 0) {
+		Cell* neighbour = GetCell(cell->Position[0] - 1, y);
+
+		if (neighbour->GetValue() == 0) {
+			cell->Position[0] -= 1;
+			Cell* tmp = grid[x][y];
+			grid[x-1][y] = grid[x][y];
+			grid[x-1][y] = tmp;
+			continue;
+		}
+		else if (cell->GetValue() == neighbour->GetValue() && !hasMerged) {
+			hasMerged = true;
+			bool mergeSuccess = *cell + *neighbour;
+			cout << mergeSuccess;
+			continue;
+		}
+		cout << "Nothing to do !";
 		break;
 	}
 }

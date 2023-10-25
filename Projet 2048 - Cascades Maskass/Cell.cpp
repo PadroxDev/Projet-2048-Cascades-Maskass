@@ -3,9 +3,9 @@
 #include <iostream>
 
 Cell::Cell(int x, int y, int _value) {
-	position.resize(2);
-	position[0] = x;
-	position[1] = y;
+	Position.resize(2);
+	Position[0] = x;
+	Position[1] = y;
 	value = _value;
 }
 
@@ -16,10 +16,11 @@ void Cell::SetValue(int _value) {
 	value = _value;
 }
 
-bool Cell::operator+(Cell* cellToMerge) {
-	if (cellToMerge->value != value) return false;
+bool Cell::operator+(Cell& cellToMerge) {
+	if (value != cellToMerge.value) return false;
 
 	value *= 2;
-	cellToMerge->value = 0;
+	cellToMerge.value = 0;
+	cout << cellToMerge.value << " uwu " << endl;
 	return true;
 }
