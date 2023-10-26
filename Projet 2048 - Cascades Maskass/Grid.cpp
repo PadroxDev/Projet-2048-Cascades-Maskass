@@ -81,119 +81,146 @@ void Grid::Clean() {
 		}
 	}
 
-	delete &grid;
-	delete &emptyCells;
+	delete & grid;
+	delete & emptyCells;
 }
 
-static enum ValidCommands {move_up, move_down, move_right, move_left};
-
-void Grid::GetMovement() {
-	map<string, ValidCommands> commands;
-	commands["up"] = ValidCommands::move_up;
-	commands["down"] = ValidCommands::move_down;
-	commands["right"] = ValidCommands::move_right;
-	commands["left"] = ValidCommands::move_left;
-
-	bool validCommand = false;
-	string command;
-
-	while (!validCommand) {
-		cout << CHOOSE_MOVE_TEXT << " : ";
-		cin >> command;
-		Utility::lowerString(command);
-
-		cout << endl << "You entered " << command << endl;
-
-		Utility::clearConsole();
-		if (commands.find(command) == commands.end()) {
-			cout << "Invalid command ! Please try again !" << endl;
-			continue;
-		} else {
-			cout << "You entered a valid command, processing to move " << command << " !" << endl;
-			validCommand = true;
-		}
+bool Grid::HandleInput() {
+	int c;
+	switch (( c = _getch())) {
+	case Input::KEY_UP:
+		//ShiftCellsTowards(Input::KEY_UP);
+		break;
+	case Input::KEY_DOWN:
+		//ShiftCellsTowards(Input::KEY_DOWN);
+		break;
+	case Input::KEY_RIGHT:
+		//ShiftCellsTowards(Input::KEY_RIGHT);
+		break;
+	case Input::KEY_LEFT:
+		//ShiftCellsTowards(Input::KEY_LEFT);
+		break;
+	default:
+		return false;
 	}
-
-	ValidCommands vCom = commands[command];
-	switch (vCom)
-	{
-	case move_up:
-		cout << "Move upwards !";
-		break;
-	case move_down:
-		cout << "Move downwards !";
-		break;
-	case move_right:
-		cout << "Move upwards !";
-		break;
-	case move_left:
-
-		break;
-	}
+	return true;
 }
 
-//void Grid::MoveCell() {
-//	for (int x = 0; x < size; x++) {
-//		for (int y = 0; y < size; y++)
-//		{
-//			Cell* cell = GetCell(x, y);
-//			if (cell->GetValue() == 0) continue;
-//
-//			while(cell->Position[0] > 0) {
-//				Cell* neighbour = GetCell(cell->Position[0] - 1, y);
-//				if(neighbour->GetValue() == 0) {
-//					cell->Position[0] -= 1;
-//					Cell* tmp = grid[x][y];
-//					grid[x][y] = grid[x - 1][y];
-//					grid[x - 1][y] = tmp;
-//					cout << "Supposed to move !";
-//				} else if(neighbour->GetValue() == cell->GetValue()) {
-//					//cout << "cout << MERGE UWUS AZEA ËZRAPRAZ¨PR ÄZ";
-//					cout << "papagnan";
-//					neighbour->SetValue(neighbour->GetValue() * 2);
-//					cell->SetValue(0);
-//					break;
-//				} else {
-//					cout << "nop";
-//					break;
-//				}
-//			}
-//		}
-//	}
-//}
-
-void Grid::ShiftCellsTowards(string direction) {
+void Grid::ShiftCellsTowards(int direction) {
+	BatchResetCells();
 	for (int x = 0; x < size; x++) {
 		for (int y = 0; y < size; y++)
 		{
-			MoveCell(x, y);
+			MoveCell(x, y, direction);
 		}
 	}
 }
 
-void Grid::MoveCell(int x, int y) {
+void Grid::MoveCell(int x, int y, int direction) {
 	Cell* cell = GetCell(x, y);
+
 	if (cell->GetValue() == 0) return;
 
-	bool hasMerged = false;
+	while (CellHasNeighbour(cell, direction)) {
+		Cell* neighbour;
+		bool shouldContinue = HandleLeftMovement(cell, neighbour);
+		if (shouldContinue) continue;
 
-	while (cell->Position[0] > 0) {
-		Cell* neighbour = GetCell(cell->Position[0] - 1, y);
+		bool hasMerged = *cell + *neighbour;
+		if (!hasMerged)
+			break;
+			
+		cell->SetHasMerge(true);
+		neighbour->SetHasMerge(true);
+		continue;
+	}
+}
 
-		if (neighbour->GetValue() == 0) {
-			cell->Position[0] -= 1;
-			Cell* tmp = grid[x][y];
-			grid[x-1][y] = grid[x][y];
-			grid[x-1][y] = tmp;
-			continue;
+bool Grid::CellHasNeighbour(Cell* cell, int direction) {
+	cout << "Aled !";
+
+	switch (direction) {
+		case Input::KEY_UP:
+			return cell->Position[1] > 0;
+			break;
+		case Input::KEY_DOWN:
+			return cell->Position[1] < (size-1);
+			break;
+		case Input::KEY_RIGHT:
+			return cell->Position[0] < (size-1);
+			break;
+		case Input::KEY_LEFT:
+			return cell->Position[0] > 0;
+			break;
+	}
+
+}
+
+bool Grid::HandleLeftMovement(Cell* cell, Cell*& neighbour) {
+	int x = cell->Position[0];
+	int y = cell->Position[1];
+	neighbour = GetCell(x - 1, y);
+
+	if (neighbour->GetValue() == 0) {
+		SwapCells(cell, neighbour, x, y);
+		cell->Position[0] -= 1;
+		return true;
+	}
+	return false;
+}
+
+bool Grid::HandleRightMovement(Cell* cell, Cell*& neighbour) {
+	int x = cell->Position[0];
+	int y = cell->Position[1];
+	neighbour = GetCell(x + 1, y);
+
+	if (neighbour->GetValue() == 0) {
+		SwapCells(cell, neighbour, x, y);
+		cell->Position[0] += 1;
+		return true;
+	}
+	return false;
+}
+
+bool Grid::HandleUpMovement(Cell* cell, Cell*& neighbour) {
+	int x = cell->Position[0];
+	int y = cell->Position[1];
+	neighbour = GetCell(x, y - 1);
+
+	if (neighbour->GetValue() == 0) {
+		SwapCells(cell, neighbour, x, y);
+		cell->Position[1] -= 1;
+		return true;
+	}
+	return false;
+}
+
+bool Grid::HandleDownMovement(Cell* cell, Cell*& neighbour) {
+	int x = cell->Position[0];
+	int y = cell->Position[1];
+	neighbour = GetCell(x, y + 1);
+
+	if (neighbour->GetValue() == 0) {
+		SwapCells(cell, neighbour, x, y);
+		cell->Position[1] += 1;
+		return true;
+	}
+	return false;
+}
+
+void Grid::SwapCells(Cell* from, Cell* to, int x, int y) {
+	Cell* tmp = from;
+	grid[x][y] = grid[x - 1][y];
+	grid[x - 1][y] = tmp;
+}
+
+void Grid::BatchResetCells() {
+	for (int x = 0; x < size; x++)
+	{
+		for (int y = 0; y < size; y++)
+		{
+			Cell* cell = GetCell(x, y);
+			cell->SetHasMerge(false);
 		}
-		else if (cell->GetValue() == neighbour->GetValue() && !hasMerged) {
-			hasMerged = true;
-			bool mergeSuccess = *cell + *neighbour;
-			cout << mergeSuccess;
-			continue;
-		}
-		cout << "Nothing to do !";
-		break;
 	}
 }

@@ -7,6 +7,7 @@ using namespace std;
 class Cell {
 private:
 	int value;
+	bool hasMerged;
 public:
 	vector<int> Position;
 
@@ -18,6 +19,7 @@ public:
 
 	// Setters
 	void SetValue(int _value);
+	void SetHasMerge(bool merged) { hasMerged = merged; }
 
 	bool operator+(Cell& cellToMerge);
 };

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <conio.h>
 #include "Cell.h"
 #include "Utility.h"
 #include "Messages.h"
@@ -29,9 +30,15 @@ public:
 	Cell* GetRandomEmptyCell();
 	int GetRandomTileValue();
 	void Display();
-	void GetMovement();
-	void ShiftCellsTowards(string direction);
-	void MoveCell(int x, int y);
-	//void SwapCells(Cell**& from, Cell**& to);
+	bool HandleInput();
+	void ShiftCellsTowards(int direction);
+	void MoveCell(int x, int y, int direction);
+	void SwapCells(Cell* from, Cell* to, int x, int y);
+	void BatchResetCells();
+	bool CellHasNeighbour(Cell* cell, int direction);
+	bool HandleLeftMovement(Cell* cell, Cell*& neighbour);
+	bool HandleRightMovement(Cell* cell, Cell*& neighbour);
+	bool HandleUpMovement(Cell* cell, Cell*& neighbour);
+	bool HandleDownMovement(Cell* cell, Cell*& neighbour);
 	void Clean();
 };
