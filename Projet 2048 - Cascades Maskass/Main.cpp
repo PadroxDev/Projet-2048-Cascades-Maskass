@@ -11,21 +11,19 @@ int main(int argc, char* argv[]) {
 	bool running = true;
 	Grid* grid = new Grid(GRID_SIZE);
 	grid->Init();
-	grid->SpawnFreshTiles(6);
+	grid->SpawnFreshTiles(8);
+	grid->Display();
+	grid->ShiftCellsTowards(Input::KEY_DOWN, &Grid::HandleDownMovement);
+	grid->Display();
 
 	while (running) {
-		grid->HandleInput();
-		//	bool keyPressed = true;
-		//	if (keyPressed) {
-		//		grid->ShiftCellsTowards(Input::KEY_LEFT);
-		//Utility::clearConsole();
-		//grid->SpawnFreshTiles(1);
-		//grid->Display();
-		//	}
-		//	running = false;
-		//}
-
-		//grid->Clean();
+		bool keyPressed = grid->HandleInput();
+		if (keyPressed) {
+			Utility::clearConsole();
+			grid->Display();
+			grid->SpawnFreshTiles(1);
+		}
 	}
+	grid->Clean();
 	return 0;
 }

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <functional>
 #include <map>
 #include <conio.h>
 #include "Cell.h"
@@ -31,9 +32,8 @@ public:
 	int GetRandomTileValue();
 	void Display();
 	bool HandleInput();
-	void ShiftCellsTowards(int direction);
-	void MoveCell(int x, int y, int direction);
-	void SwapCells(Cell* from, Cell* to, int x, int y);
+	void ShiftCellsTowards(int direction, bool (Grid::* moveFunction)(Cell*, Cell*&));
+	void MoveCell(int x, int y, int direction, bool (Grid::*)(Cell*, Cell*&));
 	void BatchResetCells();
 	bool CellHasNeighbour(Cell* cell, int direction);
 	bool HandleLeftMovement(Cell* cell, Cell*& neighbour);
@@ -41,4 +41,5 @@ public:
 	bool HandleUpMovement(Cell* cell, Cell*& neighbour);
 	bool HandleDownMovement(Cell* cell, Cell*& neighbour);
 	void Clean();
+	void SwapCells(Cell** from, Cell** to);
 };
