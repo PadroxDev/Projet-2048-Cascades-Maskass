@@ -21,5 +21,10 @@ public:
 	void SetValue(int _value);
 	void SetHasMerge(bool merged) { hasMerged = merged; }
 
+	/// <summary>
+	/// Handle merge
+	/// </summary>
+	/// <param name="cellToMerge">The cell you want to merge with. This will be destroy / reset.</param>
+	/// <returns></returns>
 	bool operator+(Cell& cellToMerge);
 };

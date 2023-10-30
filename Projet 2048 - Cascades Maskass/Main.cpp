@@ -11,17 +11,22 @@ int main(int argc, char* argv[]) {
 	bool running = true;
 	Grid* grid = new Grid(GRID_SIZE);
 	grid->Init();
-	grid->SpawnFreshTiles(8);
+	grid->SpawnFreshTiles(2);
 	grid->Display();
-	grid->ShiftCellsTowards(Input::KEY_DOWN, &Grid::HandleDownMovement);
-	grid->Display();
+	showChooseMoveText();
 
 	while (running) {
 		bool keyPressed = grid->HandleInput();
 		if (keyPressed) {
-			Utility::clearConsole();
-			grid->Display();
 			grid->SpawnFreshTiles(1);
+			grid->Display();
+
+			if (grid->WinCondition()) {
+				showVictoryText();
+			}
+			else if (grid->LooseCondition()) {
+				showDefeatText();
+			}
 		}
 	}
 	grid->Clean();
